@@ -16,7 +16,8 @@ static const float MIN_LENGTH_CHANGE_AFTER_ADD_INCHES = 2.0f;
 static const float MIN_BOARD_LENGTH_INCHES = 2.0f;
 static const float MAX_BOARD_LENGTH_INCHES = 12.0f;
 static const unsigned long MIN_TIME_BETWEEN_ADDS_MS = 2000;
-static const float CLEAR_LENGTH_INCHES = 12.0f;
+// Clear = sensor sees far (no board); use distance not board length (gap gives high distance)
+static const float CLEAR_DISTANCE_MIN_INCHES = 11.0f;
 static const unsigned long CLEAR_DURATION_MS = 200;
 
 static float s_refLength = 0.0f;
@@ -34,8 +35,9 @@ void RunBoardAdd() {
   float len = Measure::GetBoardLengthInches();
   bool valid = Measure::HasValidSensorReading();
 
-  //! Require 12+ inches for CLEAR_DURATION_MS before allowing next add
-  if (valid && len >= CLEAR_LENGTH_INCHES) {
+  //! Require distance >= CLEAR_DISTANCE (sensor sees far = gap) for CLEAR_DURATION_MS before next add
+  float dist = Measure::GetDistanceInches();
+  if (valid && dist >= CLEAR_DISTANCE_MIN_INCHES) {
     if (s_clearStartMs == 0) s_clearStartMs = now;
     if ((now - s_clearStartMs) >= CLEAR_DURATION_MS) s_clearSeenFor200ms = true;
   } else {
