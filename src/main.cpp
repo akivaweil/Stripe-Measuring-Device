@@ -47,8 +47,8 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     button.remove-btn:hover { background: #5a6578; }
     @keyframes latestRowFlash {
       0% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0); border: 2px solid transparent; background: #0f3460; transform: scale(1); }
-      15% { box-shadow: 0 0 24px 8px rgba(233, 69, 96, 0.7), inset 0 0 20px rgba(233, 69, 96, 0.2); border-color: #e94560; background: rgba(233, 69, 96, 0.25); transform: scale(1.02); }
-      40% { box-shadow: 0 0 32px 12px rgba(233, 69, 96, 0.5); border-color: #e94560; background: rgba(233, 69, 96, 0.12); transform: scale(1.01); }
+      15% { box-shadow: 0 0 36px 12px rgba(233, 69, 96, 0.85), inset 0 0 30px rgba(233, 69, 96, 0.3); border-color: #e94560; background: rgba(233, 69, 96, 0.38); transform: scale(1.03); }
+      40% { box-shadow: 0 0 48px 18px rgba(233, 69, 96, 0.65); border-color: #e94560; background: rgba(233, 69, 96, 0.18); transform: scale(1.015); }
       100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0); border: 2px solid transparent; background: #0f3460; transform: scale(1); }
     }
     .latest-row-flash { animation: latestRowFlash 1.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -95,7 +95,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
   <div class="total-box-wrap">
     <div class="desired-row">
       <label for="desiredTotalFt">Desired total (ft)</label>
-      <input type="number" id="desiredTotalFt" min="0" step="0.1" placeholder="e.g. 8">
+      <input type="number" id="desiredTotalFt" min="0" step="0.1">
     </div>
     <div id="totalBox" class="total-box">
       <div class="total-label">Total</div>
