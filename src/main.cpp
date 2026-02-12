@@ -19,7 +19,13 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
   <title>Stripe Measurement Device</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f3460'/%3E%3Cpath d='M6 16h16' stroke='%23fff' stroke-width='2.5' stroke-linecap='round'/%3E%3Ccircle cx='26' cy='16' r='3' fill='%23e94560'/%3E%3C/svg%3E">
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 400px; margin: 2em auto; padding: 1em; background: #1a1a2e; color: #eee; }
+    body { font-family: system-ui, sans-serif; max-width: 560px; margin: 2em auto; padding: 1em; background: #1a1a2e; color: #eee; }
+    .main-wrap { display: flex; gap: 1em; align-items: flex-start; }
+    .main-content { flex: 1; min-width: 0; }
+    .total-box-wrap { flex-shrink: 0; width: 140px; }
+    .total-box { background: #0f3460; border: 2px solid #e94560; border-radius: 8px; padding: 1em; text-align: center; min-height: 100px; display: flex; flex-direction: column; justify-content: center; }
+    .total-box .total-label { font-size: 0.75rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25em; }
+    .total-box .total-value { font-size: 2rem; font-weight: 700; color: #e94560; line-height: 1.2; }
     .header { text-align: center; margin-bottom: 1.5em; }
     .logo { width: 72px; height: 72px; margin: 0 auto 0.5em; display: block; }
     h1 { font-size: 1.25rem; font-weight: 600; margin: 0; letter-spacing: 0.02em; color: #fff; }
@@ -34,8 +40,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     .boards-list::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #e94560 0%, #c73e54 100%); border-radius: 5px; }
     .boards-list::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #ff6b6b 0%, #e94560 100%); }
     .board-item { padding: 0.25em 0; font-size: 0.9rem; color: #a0aec0; }
-    .latest-row { padding: 0.5em; background: #0f3460; border-radius: 6px; border: 2px solid transparent; font-size: 1.35rem; font-weight: 600; margin-bottom: 0.5em; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5em; }
-    .total-inline { font-size: 1rem; color: #e94560; font-weight: 700; }
+    .latest-row { padding: 0.5em; background: #0f3460; border-radius: 6px; border: 2px solid transparent; font-size: 1.35rem; font-weight: 600; margin-bottom: 0.5em; }
     button { margin-top: 1em; padding: 0.5em 1em; font-size: 1rem; cursor: pointer; background: #e94560; color: #fff; border: none; border-radius: 6px; font-weight: 600; }
     button:hover { background: #ff6b6b; }
     button.remove-btn { background: #4a5568; margin-left: 0.5em; }
@@ -47,6 +52,16 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
       100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0); border: 2px solid transparent; background: #0f3460; transform: scale(1); }
     }
     .latest-row-flash { animation: latestRowFlash 1.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .desired-row { margin-bottom: 0.5em; }
+    .desired-row label { font-size: 0.7rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.2em; }
+    .desired-row input { width: 100%; box-sizing: border-box; padding: 0.4em; font-size: 1rem; background: #16213e; border: 1px solid #2a3a5e; border-radius: 4px; color: #eee; }
+    @keyframes totalBoxGreenFlash {
+      0% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0); border-color: #e94560; }
+      15% { box-shadow: 0 0 24px 8px rgba(72, 187, 120, 0.7), inset 0 0 20px rgba(72, 187, 120, 0.2); border-color: #48bb78; background: rgba(72, 187, 120, 0.25); }
+      40% { box-shadow: 0 0 32px 12px rgba(72, 187, 120, 0.5); border-color: #48bb78; background: rgba(72, 187, 120, 0.12); }
+      100% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0); border-color: #e94560; background: #0f3460; }
+    }
+    .total-box-green-flash { animation: totalBoxGreenFlash 1.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
   </style>
 </head>
 <body>
@@ -60,9 +75,13 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     </svg>
     <h1>Stripe Measurement Device</h1>
   </header>
-  <div id="latestRow" class="latest-row"><span id="latestLabel">--</span><span id="latestTotal" class="total-inline"></span></div>
+  <div class="main-wrap">
+  <div class="main-content">
+  <div id="latestRow" class="latest-row"><span id="latestLabel">--</span></div>
+  <!-- distance and board length (restore to show again)
   <div class="row"><span class="label">Distance (in):</span><span id="distance">--</span></div>
   <div class="row"><span class="label">Board Length (in):</span><span id="boardLength">--</span></div>
+  -->
   <div class="boards-section">
     <div class="label">Boards measured</div>
     <div id="boardsList" class="boards-list"></div>
@@ -71,28 +90,56 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     <button onclick="resetTotal()">Reset Total</button>
     <button class="remove-btn" onclick="removeLastBoard()">Remove last board</button>
   </div>
+  </div>
+  <div class="total-box-wrap">
+    <div class="desired-row">
+      <label for="desiredTotalFt">Desired total (ft)</label>
+      <input type="number" id="desiredTotalFt" min="0" step="0.1" placeholder="e.g. 8">
+    </div>
+    <div id="totalBox" class="total-box">
+      <div class="total-label">Total</div>
+      <div id="totalValue" class="total-value">--</div>
+    </div>
+  </div>
+  </div>
   <script>
     var previousBoardCount = 0;
+    var hasFlashedGreenForTarget = false;
     var DISTANCE_BLANK_CENTER = 12;
     var DISTANCE_BLANK_TOLERANCE = 0.5;
     function fetchData() {
       fetch('/api/data').then(r => r.json()).then(d => {
         var valid = d.sensorValid;
-        var dist = valid ? d.distance : null;
-        var lo = DISTANCE_BLANK_CENTER - DISTANCE_BLANK_TOLERANCE, hi = DISTANCE_BLANK_CENTER + DISTANCE_BLANK_TOLERANCE;
-        document.getElementById('distance').textContent = dist === null ? '--' : (dist >= lo && dist <= hi ? '---' : dist.toFixed(2));
-        document.getElementById('boardLength').textContent = valid ? d.boardLength.toFixed(2) : '--';
+        // distance/board length display (restore with rows above to show again)
+        // var dist = valid ? d.distance : null;
+        // var lo = DISTANCE_BLANK_CENTER - DISTANCE_BLANK_TOLERANCE, hi = DISTANCE_BLANK_CENTER + DISTANCE_BLANK_TOLERANCE;
+        // document.getElementById('distance').textContent = dist === null ? '--' : (dist >= lo && dist <= hi ? '---' : dist.toFixed(2));
+        // document.getElementById('boardLength').textContent = valid ? d.boardLength.toFixed(2) : '--';
         var list = document.getElementById('boardsList');
         var latestLabel = document.getElementById('latestLabel');
-        var latestTotal = document.getElementById('latestTotal');
+        var totalValue = document.getElementById('totalValue');
         var boards = d.boards || [];
         var total = d.total !== undefined ? d.total : 0;
         function toIn(inches) { return inches.toFixed(2) + ' in'; }
         function toFt(inches) { return (inches / 12).toFixed(1) + ' ft'; }
         list.innerHTML = '';
+        totalValue.textContent = boards.length === 0 ? '--' : toFt(total);
+        var desiredFt = parseFloat(document.getElementById('desiredTotalFt').value);
+        var desiredIn = (desiredFt > 0) ? desiredFt * 12 : 0;
+        if (desiredIn > 0 && total >= desiredIn) {
+          if (!hasFlashedGreenForTarget) {
+            hasFlashedGreenForTarget = true;
+            var totalBox = document.getElementById('totalBox');
+            totalBox.classList.remove('total-box-green-flash');
+            totalBox.offsetHeight;
+            totalBox.classList.add('total-box-green-flash');
+            setTimeout(function() { totalBox.classList.remove('total-box-green-flash'); }, 1500);
+          }
+        } else if (total < desiredIn) {
+          hasFlashedGreenForTarget = false;
+        }
         if (boards.length === 0) {
           latestLabel.textContent = '--';
-          latestTotal.textContent = '';
         } else {
           for (var i = boards.length - 1; i >= 0; i--) {
             var el = document.createElement('div');
@@ -102,7 +149,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
           }
           var last = boards[boards.length - 1];
           latestLabel.textContent = '#' + boards.length + '  ' + toIn(last);
-          latestTotal.textContent = 'Total: ' + toFt(total);
         }
         if (boards.length > previousBoardCount) {
           previousBoardCount = boards.length;
