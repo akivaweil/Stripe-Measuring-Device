@@ -42,8 +42,11 @@ void RunBoardAdd() {
     s_clearStartMs = 0;
   }
 
+  //! Clear required only after at least one add (so first board / after reset works without seeing 12+)
+  bool clearOk = (s_lastAddMs == 0) || s_clearSeenFor200ms;
+
   //! AUTO-ADD when length stable for STABLE_DURATION_MS and within [MIN, MAX] board length
-  if (valid && len >= MIN_BOARD_LENGTH_INCHES && len <= MAX_BOARD_LENGTH_INCHES && s_clearSeenFor200ms) {
+  if (valid && len >= MIN_BOARD_LENGTH_INCHES && len <= MAX_BOARD_LENGTH_INCHES && clearOk) {
     if (s_lastAutoAddedLength >= 0.0f) {
       if (fabsf(len - s_lastAutoAddedLength) > MIN_LENGTH_CHANGE_AFTER_ADD_INCHES) {
         s_lastAutoAddedLength = -1.0f;
@@ -78,7 +81,7 @@ void RunBoardAdd() {
   //! MANUAL BUTTON ADD (rising edge only)
   s_addButton.update();
   bool buttonHigh = (s_addButton.read() == HIGH);
-  if (buttonHigh && !s_buttonWasHigh && valid && s_clearSeenFor200ms &&
+  if (buttonHigh && !s_buttonWasHigh && valid && clearOk &&
       len >= MIN_BOARD_LENGTH_INCHES && len <= MAX_BOARD_LENGTH_INCHES &&
       (s_lastAddMs == 0 || (now - s_lastAddMs) >= MIN_TIME_BETWEEN_ADDS_MS)) {
     AddBoardToList(len);
