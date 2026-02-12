@@ -55,13 +55,8 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     .desired-row { margin-bottom: 0.5em; }
     .desired-row label { font-size: 0.7rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.2em; }
     .desired-row input { width: 100%; box-sizing: border-box; padding: 0.4em; font-size: 1rem; background: #16213e; border: 1px solid #2a3a5e; border-radius: 4px; color: #eee; }
-    @keyframes totalBoxGreenFlash {
-      0% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0); border-color: #e94560; }
-      15% { box-shadow: 0 0 24px 8px rgba(72, 187, 120, 0.7), inset 0 0 20px rgba(72, 187, 120, 0.2); border-color: #48bb78; background: rgba(72, 187, 120, 0.25); }
-      40% { box-shadow: 0 0 32px 12px rgba(72, 187, 120, 0.5); border-color: #48bb78; background: rgba(72, 187, 120, 0.12); }
-      100% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0); border-color: #e94560; background: #0f3460; }
-    }
-    .total-box-green-flash { animation: totalBoxGreenFlash 1.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .total-box.reached { border-color: #48bb78; background: rgba(72, 187, 120, 0.2); }
+    .total-box.reached .total-value { color: #48bb78; }
   </style>
 </head>
 <body>
@@ -104,7 +99,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
   </div>
   <script>
     var previousBoardCount = 0;
-    var hasFlashedGreenForTarget = false;
     var DISTANCE_BLANK_CENTER = 12;
     var DISTANCE_BLANK_TOLERANCE = 0.5;
     function fetchData() {
@@ -126,17 +120,11 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         totalValue.textContent = boards.length === 0 ? '--' : toFt(total);
         var desiredFt = parseFloat(document.getElementById('desiredTotalFt').value);
         var desiredIn = (desiredFt > 0) ? desiredFt * 12 : 0;
+        var totalBox = document.getElementById('totalBox');
         if (desiredIn > 0 && total >= desiredIn) {
-          if (!hasFlashedGreenForTarget) {
-            hasFlashedGreenForTarget = true;
-            var totalBox = document.getElementById('totalBox');
-            totalBox.classList.remove('total-box-green-flash');
-            totalBox.offsetHeight;
-            totalBox.classList.add('total-box-green-flash');
-            setTimeout(function() { totalBox.classList.remove('total-box-green-flash'); }, 1500);
-          }
-        } else if (total < desiredIn) {
-          hasFlashedGreenForTarget = false;
+          totalBox.classList.add('reached');
+        } else {
+          totalBox.classList.remove('reached');
         }
         if (boards.length === 0) {
           latestLabel.textContent = '--';
