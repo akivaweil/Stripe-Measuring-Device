@@ -47,8 +47,8 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     button.remove-btn:hover { background: #5a6578; }
     @keyframes latestRowFlash {
       0% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0); border: 2px solid transparent; background: #0f3460; transform: scale(1); }
-      15% { box-shadow: 0 0 36px 12px rgba(233, 69, 96, 0.85), inset 0 0 30px rgba(233, 69, 96, 0.3); border-color: #e94560; background: rgba(233, 69, 96, 0.38); transform: scale(1.03); }
-      40% { box-shadow: 0 0 48px 18px rgba(233, 69, 96, 0.65); border-color: #e94560; background: rgba(233, 69, 96, 0.18); transform: scale(1.015); }
+      15% { box-shadow: 0 0 30px 10px rgba(233, 69, 96, 0.8), inset 0 0 25px rgba(233, 69, 96, 0.25); border-color: #e94560; background: rgba(233, 69, 96, 0.31); transform: scale(1.025); }
+      40% { box-shadow: 0 0 40px 15px rgba(233, 69, 96, 0.55); border-color: #e94560; background: rgba(233, 69, 96, 0.15); transform: scale(1.012); }
       100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0); border: 2px solid transparent; background: #0f3460; transform: scale(1); }
     }
     .latest-row-flash { animation: latestRowFlash 1.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
