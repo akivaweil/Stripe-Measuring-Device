@@ -57,6 +57,12 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     .desired-row input { width: 100%; box-sizing: border-box; padding: 0.4em; font-size: 1rem; background: #16213e; border: 1px solid #2a3a5e; border-radius: 4px; color: #eee; }
     .total-box.reached { border-color: #48bb78; background: rgba(72, 187, 120, 0.2); }
     .total-box.reached .total-value { color: #48bb78; }
+    body.target-reached .reset-btn { background: #48bb78; }
+    body.target-reached .reset-btn:hover { background: #5fd08b; }
+    body.target-reached .boards-list { scrollbar-color: #48bb78 #16213e; }
+    body.target-reached .boards-list::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #48bb78 0%, #38a169 100%); }
+    body.target-reached .boards-list::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #5fd08b 0%, #48bb78 100%); }
+    body.target-reached .latest-row { border-color: #48bb78; background: rgba(72, 187, 120, 0.2); color: #48bb78; }
   </style>
 </head>
 <body>
@@ -82,7 +88,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     <div id="boardsList" class="boards-list"></div>
   </div>
   <div style="margin-top: 1em;">
-    <button onclick="resetTotal()">Reset Total</button>
+    <button id="resetTotalBtn" class="reset-btn" onclick="resetTotal()">Reset Total</button>
     <button class="remove-btn" onclick="removeLastBoard()">Remove last board</button>
   </div>
   </div>
@@ -123,8 +129,10 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         var totalBox = document.getElementById('totalBox');
         if (desiredIn > 0 && total >= desiredIn) {
           totalBox.classList.add('reached');
+          document.body.classList.add('target-reached');
         } else {
           totalBox.classList.remove('reached');
+          document.body.classList.remove('target-reached');
         }
         if (boards.length === 0) {
           latestLabel.textContent = '--';
