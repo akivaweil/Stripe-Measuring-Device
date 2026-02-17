@@ -91,6 +91,10 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     <button id="resetTotalBtn" class="reset-btn" onclick="resetTotal()">Reset Total</button>
     <button class="remove-btn" onclick="removeLastBoard()">Remove last board</button>
   </div>
+  <div style="margin-top: 1em;">
+    <button onclick="addManual(1.0)">+1.0"</button>
+    <button onclick="addManual(3.0)">+3.0"</button>
+  </div>
   </div>
   <div class="total-box-wrap">
     <div class="desired-row">
@@ -161,6 +165,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     function removeLastBoard() {
       fetch('/api/remove-last', { method: 'POST' }).then(function() { fetchData(); });
     }
+    function addManual(inches) {
+      fetch('/api/add-manual?val=' + inches, { method: 'POST' }).then(function() { fetchData(); });
+    }
     function resetTotal() {
       fetch('/api/reset', { method: 'POST' }).then(function() { fetchData(); });
     }
@@ -206,6 +213,16 @@ void handleApiRemoveLast(AsyncWebServerRequest* request) {
   request->send(200);
 }
 
+void handleApiAddManual(AsyncWebServerRequest* request) {
+  if (request->method() == HTTP_POST) {
+    if (request->hasParam("val")) {
+      float val = request->getParam("val")->value().toFloat();
+      AddBoardToList(val);
+    }
+  }
+  request->send(200);
+}
+
 void setup() {
   Serial.begin(115200);
 
@@ -216,6 +233,7 @@ void setup() {
   server.on("/api/data", HTTP_GET, handleApiData);
   server.on("/api/reset", HTTP_POST, handleApiReset);
   server.on("/api/remove-last", HTTP_POST, handleApiRemoveLast);
+  server.on("/api/add-manual", HTTP_POST, handleApiAddManual);
 
   server.begin();
 }
