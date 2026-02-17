@@ -120,7 +120,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
         var totalValue = document.getElementById('totalValue');
         var boards = d.boards || [];
         var total = d.total !== undefined ? d.total : 0;
-        function toIn(inches) { return inches.toFixed(2) + ' in'; }
+        function toIn(inches) { return inches.toFixed(1) + ' in'; }
         function toFt(inches) { return (inches / 12).toFixed(1) + ' ft'; }
         list.innerHTML = '';
         totalValue.textContent = boards.length === 0 ? '--' : toFt(total);
