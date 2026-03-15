@@ -1,42 +1,57 @@
 #include "StateMachine/Measure.h"
 #include "Config/Pin_Def.h"
 #include "Config/Config.h"
+#include <Bounce2.h>
 #include <Arduino.h>
 
 //╔═══╗ ════════════════════════════════════════════════════════════════ ╔═══╗
 //║ MEASURE STATE ║
 //╚═══╝ ════════════════════════════════════════════════════════════════ ╚═══╝
 
-#define READINGS_AVG_COUNT 10
+static const float IR_SENSOR_LENGTHS_INCHES[] = {
+  1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f
+};
+static const int IR_SENSOR_LENGTH_COUNT = sizeof(IR_SENSOR_LENGTHS_INCHES) / sizeof(IR_SENSOR_LENGTHS_INCHES[0]);
+static const unsigned long IR_SENSOR_DEBOUNCE_MS = 5;
 
-static float s_readings[READINGS_AVG_COUNT];
-static int s_readingCount = 0;
-static int s_readingWriteIndex = 0;
 static float s_distanceInches = 0.0f;
 static float s_boardLengthInches = 0.0f;
 static bool s_sensorValid = false;
+static Bounce s_irSensors[IR_SENSOR_LENGTH_COUNT];
 
 void Measure::Run() {
-  digitalWrite(ULTRASONIC_TRIG_PIN, LOW);
-  delayMicroseconds(2);
-  digitalWrite(ULTRASONIC_TRIG_PIN, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(ULTRASONIC_TRIG_PIN, LOW);
+  s_boardLengthInches = 0.0f;
 
-  unsigned long durationUs = pulseIn(ULTRASONIC_ECHO_PIN, HIGH, 30000);
-  if (durationUs > 0) {
-    float raw = (float)durationUs / ULTRASONIC_US_PER_INCH;
-    if (raw < 0.0f) raw = 0.0f;
-    if (raw > MEASUREMENT_SPAN_INCHES) raw = MEASUREMENT_SPAN_INCHES;
-    s_readings[s_readingWriteIndex] = raw;
-    s_readingWriteIndex = (s_readingWriteIndex + 1) % READINGS_AVG_COUNT;
-    if (s_readingCount < READINGS_AVG_COUNT) s_readingCount++;
-    float sum = 0.0f;
-    for (int i = 0; i < s_readingCount; i++) sum += s_readings[i];
-    s_distanceInches = sum / (float)s_readingCount;
-    s_boardLengthInches = MEASUREMENT_SPAN_INCHES - s_distanceInches;
+  int sensorCount = IR_SENSOR_COUNT;
+  if (sensorCount > IR_SENSOR_LENGTH_COUNT) sensorCount = IR_SENSOR_LENGTH_COUNT;
+
+  int highestTriggeredIndex = -1;
+  bool sawClearAfterTrigger = false;
+  bool invalidSensorStack = false;
+
+  //! Valid reading requires a solid stack from 1" up to the highest triggered sensor
+  for (int i = 0; i < sensorCount; i++) {
+    s_irSensors[i].update();
+    bool sensorTriggered = (s_irSensors[i].read() == LOW);
+
+    if (sensorTriggered) {
+      if (sawClearAfterTrigger) {
+        invalidSensorStack = true;
+      }
+      highestTriggeredIndex = i;
+    } else if (highestTriggeredIndex >= 0) {
+      sawClearAfterTrigger = true;
+    }
   }
-  s_sensorValid = (s_readingCount > 0);
+
+  if (!invalidSensorStack && highestTriggeredIndex >= 0) {
+    s_boardLengthInches = IR_SENSOR_LENGTHS_INCHES[highestTriggeredIndex];
+  }
+
+  s_distanceInches = MAX_MEASUREMENT_LENGTH_INCHES - s_boardLengthInches;
+  if (s_distanceInches < 0.0f) s_distanceInches = 0.0f;
+
+  s_sensorValid = (sensorCount > 0) && !invalidSensorStack;
 }
 
 float Measure::GetDistanceInches() {
@@ -52,6 +67,12 @@ bool Measure::HasValidSensorReading() {
 }
 
 void Measure::Setup() {
-  pinMode(ULTRASONIC_TRIG_PIN, OUTPUT);
-  pinMode(ULTRASONIC_ECHO_PIN, INPUT);
+  for (int i = 0; i < IR_SENSOR_COUNT; i++) {
+    s_irSensors[i].attach(IR_SENSOR_PINS[i], INPUT_PULLUP);
+    s_irSensors[i].interval(IR_SENSOR_DEBOUNCE_MS);
+  }
+
+  s_distanceInches = MAX_MEASUREMENT_LENGTH_INCHES;
+  s_boardLengthInches = 0.0f;
+  s_sensorValid = (IR_SENSOR_COUNT > 0);
 }

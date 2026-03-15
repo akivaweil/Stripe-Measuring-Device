@@ -5,6 +5,5 @@
 
 #include "Config/Pin_Def.h"
 
-const int ULTRASONIC_TRIG_PIN = 10;
-const int ULTRASONIC_ECHO_PIN = 11;
-const int ADD_BOARD_BUTTON_PIN = 15;
+const int IR_SENSOR_COUNT = 11;
+const int IR_SENSOR_PINS[IR_SENSOR_COUNT] = {4, 5, 6, 7, 15, 16, 17, 18, 8, 3, 46};
