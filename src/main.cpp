@@ -58,8 +58,8 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     .desired-row input[type="number"]::-webkit-inner-spin-button,
     .desired-row input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; opacity: 1; cursor: pointer; background-color: #2a3a5e; background-repeat: no-repeat; background-position: center; border-left: 1px solid #3a4a6e; }
     .desired-row input[type="number"]::-webkit-outer-spin-button { display: none; }
-    .desired-row input[type="number"]::-webkit-inner-spin-button { height: 1.8em; width: 1.4em; background-size: 0.55em 1em; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 20\"><path fill=\"%23a0aec0\" d=\"M6 2L2 8h8z\"/><path fill=\"%23a0aec0\" d=\"M6 18L2 12h8z\"/></svg>'); border-radius: 0 4px 4px 0; }
-    .desired-row input[type="number"]::-webkit-inner-spin-button:hover { background-color: #3a4a6e; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 20\"><path fill=\"%23e94560\" d=\"M6 2L2 8h8z\"/><path fill=\"%23e94560\" d=\"M6 18L2 12h8z\"/></svg>'); border-left-color: #e94560; }
+    .desired-row input[type="number"]::-webkit-inner-spin-button { height: 1.8em; width: 1.4em; background-size: 0.55em 1em; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 20\"><path fill=\"%23a0aec0\" d=\"M6 1L2 7h8z M3 9.5h6v1H3z M6 19L2 13h8z\"/></svg>'); border-radius: 0 4px 4px 0; }
+    .desired-row input[type="number"]::-webkit-inner-spin-button:hover { background-color: #3a4a6e; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 20\"><path fill=\"%23e94560\" d=\"M6 1L2 7h8z M3 9.5h6v1H3z M6 19L2 13h8z\"/></svg>'); border-left-color: #e94560; }
     .total-box.reached { border-color: #48bb78; background: rgba(72, 187, 120, 0.2); }
     .total-box.reached .total-value { color: #48bb78; }
     body.target-reached .reset-btn { background: #48bb78; }
