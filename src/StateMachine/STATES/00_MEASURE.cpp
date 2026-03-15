@@ -26,8 +26,7 @@ void Measure::Run() {
   if (sensorCount > IR_SENSOR_LENGTH_COUNT) sensorCount = IR_SENSOR_LENGTH_COUNT;
 
   int highestTriggeredIndex = -1;
-  bool sawClearAfterTrigger = false;
-  bool invalidSensorStack = false;
+  int triggeredCount = 0;
 
   //! Valid reading requires a solid stack from 1" up to the highest triggered sensor
   for (int i = 0; i < sensorCount; i++) {
@@ -35,14 +34,12 @@ void Measure::Run() {
     bool sensorTriggered = (s_irSensors[i].read() == LOW);
 
     if (sensorTriggered) {
-      if (sawClearAfterTrigger) {
-        invalidSensorStack = true;
-      }
       highestTriggeredIndex = i;
-    } else if (highestTriggeredIndex >= 0) {
-      sawClearAfterTrigger = true;
+      triggeredCount++;
     }
   }
+
+  bool invalidSensorStack = (highestTriggeredIndex >= 0) && (triggeredCount != highestTriggeredIndex + 1);
 
   if (!invalidSensorStack && highestTriggeredIndex >= 0) {
     s_boardLengthInches = IR_SENSOR_LENGTHS_INCHES[highestTriggeredIndex];
