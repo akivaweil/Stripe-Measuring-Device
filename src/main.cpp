@@ -17,158 +17,249 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Stripe Measurement Device</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f3460'/%3E%3Cpath d='M6 16h16' stroke='%23fff' stroke-width='2.5' stroke-linecap='round'/%3E%3Ccircle cx='26' cy='16' r='3' fill='%23e94560'/%3E%3C/svg%3E">
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 560px; margin: 2em auto; padding: 1em; background: #1a1a2e; color: #eee; }
-    .main-wrap { display: flex; gap: 1em; align-items: flex-start; }
-    .main-content { flex: 1; min-width: 0; }
-    .total-box-wrap { flex-shrink: 0; width: 140px; }
-    .total-box { background: #0f3460; border: 2px solid #e94560; border-radius: 8px; padding: 1em; text-align: center; min-height: 100px; display: flex; flex-direction: column; justify-content: center; }
-    .total-box .total-label { font-size: 0.75rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25em; }
-    .total-box .total-value { font-size: 2rem; font-weight: 700; color: #e94560; line-height: 1.2; }
-    .header { text-align: center; margin-bottom: 1.5em; }
-    .logo { width: 72px; height: 72px; margin: 0 auto 0.5em; display: block; }
-    h1 { font-size: 1.25rem; font-weight: 600; margin: 0; letter-spacing: 0.02em; color: #fff; }
-    .row { display: flex; justify-content: space-between; margin: 0.5em 0; padding: 0.5em; background: #16213e; border-radius: 6px; }
-    .label { font-weight: 600; color: #a0aec0; }
-    .total { font-size: 1.5rem; background: #0f3460; }
-    .boards-section { margin-top: 1em; padding: 0.75em; background: #16213e; border-radius: 6px; }
-    .boards-section .label { font-weight: 600; color: #a0aec0; margin-bottom: 0.5em; display: block; }
-    .boards-list { max-height: 12em; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #e94560 #16213e; }
-    .boards-list::-webkit-scrollbar { width: 10px; }
-    .boards-list::-webkit-scrollbar-track { background: #16213e; border-radius: 5px; }
-    .boards-list::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #e94560 0%, #c73e54 100%); border-radius: 5px; }
-    .boards-list::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #ff6b6b 0%, #e94560 100%); }
-    .board-item { padding: 0.25em 0; font-size: 0.9rem; color: #a0aec0; }
-    .latest-row { padding: 0.5em; background: #0f3460; border-radius: 6px; border: 2px solid transparent; font-size: 1.35rem; font-weight: 600; margin-bottom: 0.5em; }
-    button { margin-top: 1em; padding: 0.5em 1em; font-size: 1rem; cursor: pointer; background: #e94560; color: #fff; border: none; border-radius: 6px; font-weight: 600; }
-    button:hover { background: #ff6b6b; }
-    button.remove-btn { background: #4a5568; margin-left: 0.5em; }
-    button.remove-btn:hover { background: #5a6578; }
-    @keyframes latestRowFlash {
-      0% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0); border: 2px solid transparent; background: #0f3460; transform: scale(1); }
-      15% { box-shadow: 0 0 30px 10px rgba(233, 69, 96, 0.8), inset 0 0 25px rgba(233, 69, 96, 0.25); border-color: #e94560; background: rgba(233, 69, 96, 0.31); transform: scale(1.025); }
-      40% { box-shadow: 0 0 40px 15px rgba(233, 69, 96, 0.55); border-color: #e94560; background: rgba(233, 69, 96, 0.15); transform: scale(1.012); }
-      100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0); border: 2px solid transparent; background: #0f3460; transform: scale(1); }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d0f14;
+      --surface: #161a24;
+      --surface2: #1e2334;
+      --border: rgba(255,255,255,0.07);
+      --accent: #e94560;
+      --accent-glow: rgba(233,69,96,0.25);
+      --green: #34d399;
+      --green-glow: rgba(52,211,153,0.25);
+      --text: #f0f4ff;
+      --muted: #6b7a99;
+      --radius: 12px;
     }
-    @keyframes latestRowFlashSuccess {
-      0% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0); border: 2px solid transparent; background: #0f3460; transform: scale(1); }
-      15% { box-shadow: 0 0 30px 10px rgba(72, 187, 120, 0.8), inset 0 0 25px rgba(72, 187, 120, 0.25); border-color: #48bb78; background: rgba(72, 187, 120, 0.31); transform: scale(1.025); }
-      40% { box-shadow: 0 0 40px 15px rgba(72, 187, 120, 0.55); border-color: #48bb78; background: rgba(72, 187, 120, 0.15); transform: scale(1.012); }
-      100% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0); border: 2px solid transparent; background: #0f3460; transform: scale(1); }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 1.5rem 1rem 2rem; }
+    .page { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+
+    /* Header */
+    .header { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+    .header-icon { width: 38px; height: 38px; flex-shrink: 0; }
+    .header-title { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.01em; color: var(--text); }
+    .header-sub { font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); margin-left: auto; flex-shrink: 0; box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* Latest measurement card */
+    .latest-card { padding: 1.5rem 1.5rem 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); position: relative; overflow: hidden; transition: border-color 0.4s; }
+    .latest-card::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse at top left, var(--accent-glow), transparent 65%); pointer-events:none; transition: background 0.4s; }
+    body.target-reached .latest-card::before { background: radial-gradient(ellipse at top left, var(--green-glow), transparent 65%); }
+    .latest-chip { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); background: rgba(233,69,96,0.12); padding: 0.22em 0.65em; border-radius: 20px; display: inline-block; margin-bottom: 0.6rem; transition: color 0.3s, background 0.3s; }
+    body.target-reached .latest-chip { color: var(--green); background: rgba(52,211,153,0.12); }
+    .latest-value { font-size: 3rem; font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--text); }
+    .latest-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; }
+
+    /* Stats row */
+    .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .stat-card { padding: 1rem 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+    .stat-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.4rem; }
+    .stat-value { font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); transition: color 0.3s; }
+    body.target-reached .stat-card.total-card .stat-value { color: var(--green); }
+    .stat-count { font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); }
+
+    /* Progress bar */
+    .progress-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; display: none; }
+    .progress-wrap.visible { display: block; }
+    .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.65rem; }
+    .progress-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+    .progress-pct { font-size: 0.85rem; font-weight: 700; color: var(--accent); transition: color 0.3s; }
+    body.target-reached .progress-pct { color: var(--green); }
+    .progress-track { height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+    .progress-bar { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #e94560, #ff6b8a); transition: width 0.4s ease, background 0.3s; }
+    body.target-reached .progress-bar { background: linear-gradient(90deg, #34d399, #6ee7b7); }
+
+    /* Goal input */
+    .goal-card { padding: 1rem 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+    .goal-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.4rem; }
+    input[type="number"] { width: 100%; padding: 0.55em 0.8em; font-size: 1rem; font-weight: 600; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); outline: none; -moz-appearance: textfield; transition: border-color 0.2s; }
+    input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; display: none; }
+    input[type="number"]:focus { border-color: rgba(233,69,96,0.5); }
+    input[type="number"]::placeholder { color: var(--muted); font-weight: 400; }
+
+    /* Boards list */
+    .boards-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .boards-header { padding: 0.8rem 1.25rem; border-bottom: 1px solid var(--border); }
+    .boards-title { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+    .boards-list { max-height: 200px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(233,69,96,0.4) transparent; }
+    .boards-list::-webkit-scrollbar { width: 3px; }
+    .boards-list::-webkit-scrollbar-track { background: transparent; }
+    .boards-list::-webkit-scrollbar-thumb { background: rgba(233,69,96,0.4); border-radius: 99px; }
+    .board-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1.25rem; border-bottom: 1px solid var(--border); }
+    .board-item:last-child { border-bottom: none; }
+    .board-idx { font-size: 0.68rem; font-weight: 700; color: var(--muted); width: 1.8rem; flex-shrink: 0; text-align: right; }
+    .board-len { font-size: 0.9rem; font-weight: 600; color: var(--text); min-width: 3.5rem; }
+    .board-bar-wrap { flex: 1; height: 3px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+    .board-bar { height: 100%; border-radius: 99px; background: var(--accent); opacity: 0.35; }
+    .board-item:first-child .board-bar { opacity: 0.85; }
+    .boards-empty { padding: 1.75rem 1.25rem; text-align: center; font-size: 0.85rem; color: var(--muted); }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 0.5rem; }
+    .btn { flex: 1; padding: 0.7em 1em; font-size: 0.875rem; font-weight: 700; cursor: pointer; border: none; border-radius: 8px; transition: filter 0.15s, transform 0.1s; letter-spacing: 0.01em; font-family: inherit; }
+    .btn:active { transform: scale(0.97); }
+    .btn-danger { background: var(--accent); color: #fff; }
+    .btn-danger:hover { filter: brightness(1.15); }
+    body.target-reached .btn-danger { background: var(--green); color: #0d1f14; }
+    .btn-ghost { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.14); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); flex: 0 0 auto; padding: 0.7em 1.25em; font-family: inherit; }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.18); background: var(--surface2); }
+
+    /* Flash animations */
+    @keyframes flashRed {
+      0%   { box-shadow: none; }
+      18%  { box-shadow: 0 0 0 3px rgba(233,69,96,0.6), 0 0 32px 6px rgba(233,69,96,0.25); }
+      100% { box-shadow: none; }
     }
-    .latest-row-flash { animation: latestRowFlash 1.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-    body.target-reached .latest-row-flash { animation: latestRowFlashSuccess 1.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-    .desired-row { margin-bottom: 0.5em; }
-    .desired-row label { font-size: 0.7rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.2em; }
-    .desired-row input { width: 25%; box-sizing: border-box; padding: 0.4em 0.4em; font-size: 1rem; background: #16213e; border: 1px solid #2a3a5e; border-radius: 4px; color: #eee; }
-    .desired-row input[type="number"]::-webkit-inner-spin-button,
-    .desired-row input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; display: none; }
-    .desired-row input[type="number"] { -moz-appearance: textfield; }
-    .total-box.reached { border-color: #48bb78; background: rgba(72, 187, 120, 0.2); }
-    .total-box.reached .total-value { color: #48bb78; }
-    body.target-reached .reset-btn { background: #48bb78; }
-    body.target-reached .reset-btn:hover { background: #5fd08b; }
-    body.target-reached .boards-list { scrollbar-color: #48bb78 #16213e; }
-    body.target-reached .boards-list::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #48bb78 0%, #38a169 100%); }
-    body.target-reached .boards-list::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #5fd08b 0%, #48bb78 100%); }
-    body.target-reached .latest-row { border-color: #48bb78; background: rgba(72, 187, 120, 0.2); color: #48bb78; }
+    @keyframes flashGreen {
+      0%   { box-shadow: none; }
+      18%  { box-shadow: 0 0 0 3px rgba(52,211,153,0.6), 0 0 32px 6px rgba(52,211,153,0.25); }
+      100% { box-shadow: none; }
+    }
+    .flash-red   { animation: flashRed   1.1s ease-out; }
+    .flash-green { animation: flashGreen 1.1s ease-out; }
   </style>
 </head>
 <body>
-  <header class="header">
-    <svg class="logo" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect width="64" height="64" rx="12" fill="url(#lg)"/>
-      <path d="M12 32h40" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-      <path d="M12 24h32M12 40h28" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="52" cy="32" r="4" fill="#e94560"/>
-      <defs><linearGradient id="lg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse"><stop stop-color="#0f3460"/><stop offset="1" stop-color="#16213e"/></linearGradient></defs>
-    </svg>
-    <h1>Stripe Measurement Device</h1>
-  </header>
-  <div class="main-wrap">
-  <div class="main-content">
-  <div id="latestRow" class="latest-row"><span id="latestLabel">--</span></div>
-  <div class="boards-section">
-    <div class="label">Boards measured</div>
-    <div id="boardsList" class="boards-list"></div>
-  </div>
-  <div style="margin-top: 1em;">
-    <button id="resetTotalBtn" class="reset-btn" onclick="resetTotal()">Reset Total</button>
-    <button class="remove-btn" onclick="removeLastBoard()">Remove last board</button>
-  </div>
-  <div style="margin-top: 1em;">
-    <button onclick="addManual(1.0)">+1.0"</button>
-    <button onclick="addManual(3.0)">+3.0"</button>
-  </div>
-  </div>
-  <div class="total-box-wrap">
-    <div class="desired-row">
-      <label for="desiredTotalFt">Desired total (ft)</label>
-      <input type="number" id="desiredTotalFt" min="0" step="0.1">
+  <div class="page">
+
+    <header class="header">
+      <svg class="header-icon" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="38" rx="9" fill="url(#hg)"/>
+        <path d="M7 19h24" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M7 13h18M7 25h14" stroke="rgba(255,255,255,0.45)" stroke-width="1.6" stroke-linecap="round"/>
+        <circle cx="31" cy="19" r="3" fill="#e94560"/>
+        <defs><linearGradient id="hg" x1="0" y1="0" x2="38" y2="38" gradientUnits="userSpaceOnUse"><stop stop-color="#1e2d5a"/><stop offset="1" stop-color="#0d1120"/></linearGradient></defs>
+      </svg>
+      <div>
+        <div class="header-title">Stripe Measurement</div>
+        <div class="header-sub">Live board tracker</div>
+      </div>
+      <div class="dot"></div>
+    </header>
+
+    <div id="latestCard" class="latest-card">
+      <div class="latest-chip">Latest board</div>
+      <div id="latestValue" class="latest-value">--</div>
+      <div id="latestSub" class="latest-sub">&nbsp;</div>
     </div>
-    <div id="totalBox" class="total-box">
-      <div class="total-label">Total</div>
-      <div id="totalValue" class="total-value">--</div>
+
+    <div class="stats-row">
+      <div class="stat-card total-card">
+        <div class="stat-label">Total length</div>
+        <div id="totalValue" class="stat-value">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Boards</div>
+        <div id="countValue" class="stat-count">0</div>
+      </div>
     </div>
-  </div>
+
+    <div class="goal-card">
+      <div class="goal-label">Target total (ft)</div>
+      <input type="number" id="desiredTotalFt" min="0" step="0.1" placeholder="e.g. 20">
+    </div>
+
+    <div id="progressWrap" class="progress-wrap">
+      <div class="progress-header">
+        <div class="progress-label">Progress to target</div>
+        <div id="progressPct" class="progress-pct">0%</div>
+      </div>
+      <div class="progress-track">
+        <div id="progressBar" class="progress-bar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="boards-card">
+      <div class="boards-header">
+        <div class="boards-title">Board log</div>
+      </div>
+      <div id="boardsList" class="boards-list">
+        <div class="boards-empty">No boards measured yet</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-danger" onclick="resetTotal()">Reset</button>
+      <button class="btn btn-ghost" onclick="removeLastBoard()">Remove last</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="addManual(1.0)">+ 1.0&quot;</button>
+      <button class="btn btn-outline" onclick="addManual(3.0)">+ 3.0&quot;</button>
+    </div>
+
   </div>
   <script>
-    var previousBoardCount = 0;
+    var prevCount = 0;
+    var maxLen = 0;
+    function toIn(v) { return v.toFixed(1) + '"'; }
+    function toFt(v) { return (v / 12).toFixed(2) + ' ft'; }
     function fetchData() {
-      fetch('/api/data').then(r => r.json()).then(d => {
-        var list = document.getElementById('boardsList');
-        var latestLabel = document.getElementById('latestLabel');
-        var totalValue = document.getElementById('totalValue');
+      fetch('/api/data').then(function(r){ return r.json(); }).then(function(d) {
         var boards = d.boards || [];
-        var total = d.total !== undefined ? d.total : 0;
-        function toIn(inches) { return inches.toFixed(1) + ' in'; }
-        function toFt(inches) { return (inches / 12).toFixed(1) + ' ft'; }
-        list.innerHTML = '';
-        totalValue.textContent = boards.length === 0 ? '--' : toFt(total);
+        var total  = d.total || 0;
+        var n      = boards.length;
+        var latestVal = document.getElementById('latestValue');
+        var latestSub = document.getElementById('latestSub');
+        if (n === 0) {
+          latestVal.textContent = '--';
+          latestSub.innerHTML = '&nbsp;';
+        } else {
+          var last = boards[n - 1];
+          latestVal.textContent = toIn(last);
+          latestSub.textContent = 'Board #' + n + '  \u2022  ' + (last / 12).toFixed(3) + ' ft';
+        }
+        document.getElementById('totalValue').textContent = n === 0 ? '--' : toFt(total);
+        document.getElementById('countValue').textContent = n;
         var desiredFt = parseFloat(document.getElementById('desiredTotalFt').value);
         var desiredIn = (desiredFt > 0) ? desiredFt * 12 : 0;
-        var totalBox = document.getElementById('totalBox');
-        if (desiredIn > 0 && total >= desiredIn) {
-          totalBox.classList.add('reached');
-          document.body.classList.add('target-reached');
+        var reached   = desiredIn > 0 && total >= desiredIn;
+        var pw = document.getElementById('progressWrap');
+        if (desiredIn > 0) {
+          var pct = Math.min(100, (total / desiredIn) * 100);
+          pw.classList.add('visible');
+          document.getElementById('progressBar').style.width = pct.toFixed(1) + '%';
+          document.getElementById('progressPct').textContent  = pct.toFixed(0) + '%';
         } else {
-          totalBox.classList.remove('reached');
-          document.body.classList.remove('target-reached');
+          pw.classList.remove('visible');
         }
-        if (boards.length === 0) {
-          latestLabel.textContent = '--';
+        if (reached) { document.body.classList.add('target-reached'); }
+        else          { document.body.classList.remove('target-reached'); }
+        var list = document.getElementById('boardsList');
+        if (n === 0) {
+          list.innerHTML = '<div class="boards-empty">No boards measured yet</div>';
+          maxLen = 0;
         } else {
-          for (var i = boards.length - 1; i >= 0; i--) {
+          maxLen = 0;
+          for (var i = 0; i < n; i++) { if (boards[i] > maxLen) maxLen = boards[i]; }
+          list.innerHTML = '';
+          for (var i = n - 1; i >= 0; i--) {
             var el = document.createElement('div');
             el.className = 'board-item';
-            el.textContent = '#' + (i + 1) + '  ' + toIn(boards[i]);
+            var barPct = maxLen > 0 ? (boards[i] / maxLen * 100).toFixed(1) : 0;
+            el.innerHTML =
+              '<span class="board-idx">#' + (i + 1) + '</span>' +
+              '<span class="board-len">' + toIn(boards[i]) + '</span>' +
+              '<div class="board-bar-wrap"><div class="board-bar" style="width:' + barPct + '%"></div></div>';
             list.appendChild(el);
           }
-          var last = boards[boards.length - 1];
-          latestLabel.textContent = '#' + boards.length + '  ' + toIn(last);
         }
-        if (boards.length > previousBoardCount) {
-          previousBoardCount = boards.length;
-          var row = document.getElementById('latestRow');
-          row.classList.remove('latest-row-flash');
-          row.offsetHeight;
-          row.classList.add('latest-row-flash');
-          setTimeout(function() { row.classList.remove('latest-row-flash'); }, 500);
-        } else {
-          previousBoardCount = boards.length;
+        if (n > prevCount) {
+          var card = document.getElementById('latestCard');
+          card.classList.remove('flash-red', 'flash-green');
+          card.offsetHeight;
+          card.classList.add(reached ? 'flash-green' : 'flash-red');
+          setTimeout(function(){ card.classList.remove('flash-red','flash-green'); }, 1200);
         }
+        prevCount = n;
       });
     }
-    function removeLastBoard() {
-      fetch('/api/remove-last', { method: 'POST' }).then(function() { fetchData(); });
-    }
-    function addManual(inches) {
-      fetch('/api/add-manual?val=' + inches, { method: 'POST' }).then(function() { fetchData(); });
-    }
-    function resetTotal() {
-      fetch('/api/reset', { method: 'POST' }).then(function() { fetchData(); });
-    }
+    function removeLastBoard() { fetch('/api/remove-last', { method: 'POST' }).then(fetchData); }
+    function addManual(v)      { fetch('/api/add-manual?val=' + v, { method: 'POST' }).then(fetchData); }
+    function resetTotal()      { fetch('/api/reset', { method: 'POST' }).then(fetchData); }
     setInterval(fetchData, 250);
     fetchData();
   </script>
