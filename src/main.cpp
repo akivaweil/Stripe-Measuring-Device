@@ -110,17 +110,19 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
 
     /* Flash animations */
     @keyframes flashRed {
-      0%   { box-shadow: none; }
-      18%  { box-shadow: 0 0 0 4px rgba(233,69,96,0.75), 0 0 40px 8px rgba(233,69,96,0.32); }
-      100% { box-shadow: none; }
+      0%   { box-shadow: none; background: var(--surface); transform: scale(1); }
+      12%  { box-shadow: 0 0 0 5px rgba(233,69,96,0.9), 0 0 60px 20px rgba(233,69,96,0.5); background: rgba(233,69,96,0.22); transform: scale(1.03); }
+      35%  { box-shadow: 0 0 0 3px rgba(233,69,96,0.5), 0 0 40px 10px rgba(233,69,96,0.25); background: rgba(233,69,96,0.08); transform: scale(1.01); }
+      100% { box-shadow: none; background: var(--surface); transform: scale(1); }
     }
     @keyframes flashGreen {
-      0%   { box-shadow: none; }
-      18%  { box-shadow: 0 0 0 4px rgba(52,211,153,0.75), 0 0 40px 8px rgba(52,211,153,0.32); }
-      100% { box-shadow: none; }
+      0%   { box-shadow: none; background: var(--surface); transform: scale(1); }
+      12%  { box-shadow: 0 0 0 5px rgba(52,211,153,0.9), 0 0 60px 20px rgba(52,211,153,0.5); background: rgba(52,211,153,0.22); transform: scale(1.03); }
+      35%  { box-shadow: 0 0 0 3px rgba(52,211,153,0.5), 0 0 40px 10px rgba(52,211,153,0.25); background: rgba(52,211,153,0.08); transform: scale(1.01); }
+      100% { box-shadow: none; background: var(--surface); transform: scale(1); }
     }
-    .flash-red   { animation: flashRed   1.4s ease-out; }
-    .flash-green { animation: flashGreen 1.4s ease-out; }
+    .flash-red   { animation: flashRed   1.5s cubic-bezier(0.22, 1, 0.36, 1); }
+    .flash-green { animation: flashGreen 1.5s cubic-bezier(0.22, 1, 0.36, 1); }
   </style>
 </head>
 <body>
