@@ -111,16 +111,16 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     /* Flash animations */
     @keyframes flashRed {
       0%   { box-shadow: none; }
-      18%  { box-shadow: 0 0 0 3px rgba(233,69,96,0.6), 0 0 32px 6px rgba(233,69,96,0.25); }
+      18%  { box-shadow: 0 0 0 4px rgba(233,69,96,0.75), 0 0 40px 8px rgba(233,69,96,0.32); }
       100% { box-shadow: none; }
     }
     @keyframes flashGreen {
       0%   { box-shadow: none; }
-      18%  { box-shadow: 0 0 0 3px rgba(52,211,153,0.6), 0 0 32px 6px rgba(52,211,153,0.25); }
+      18%  { box-shadow: 0 0 0 4px rgba(52,211,153,0.75), 0 0 40px 8px rgba(52,211,153,0.32); }
       100% { box-shadow: none; }
     }
-    .flash-red   { animation: flashRed   1.1s ease-out; }
-    .flash-green { animation: flashGreen 1.1s ease-out; }
+    .flash-red   { animation: flashRed   1.4s ease-out; }
+    .flash-green { animation: flashGreen 1.4s ease-out; }
   </style>
 </head>
 <body>
@@ -252,7 +252,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
           card.classList.remove('flash-red', 'flash-green');
           card.offsetHeight;
           card.classList.add(reached ? 'flash-green' : 'flash-red');
-          setTimeout(function(){ card.classList.remove('flash-red','flash-green'); }, 1200);
+          setTimeout(function(){ card.classList.remove('flash-red','flash-green'); }, 1500);
         }
         prevCount = n;
       });
