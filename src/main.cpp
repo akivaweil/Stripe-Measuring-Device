@@ -54,7 +54,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     .latest-row-flash { animation: latestRowFlash 1.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
     .desired-row { margin-bottom: 0.5em; }
     .desired-row label { font-size: 0.7rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.2em; }
-    .desired-row input { width: 100%; box-sizing: border-box; padding: 0.4em 2.5em 0.4em 0.4em; font-size: 1rem; background: #16213e; border: 1px solid #2a3a5e; border-radius: 4px; color: #eee; }
+    .desired-row input { width: 100%; box-sizing: border-box; padding: 0.4em 0 0.4em 0.4em; font-size: 1rem; background: #16213e; border: 1px solid #2a3a5e; border-radius: 4px; color: #eee; }
     .desired-row input[type="number"]::-webkit-inner-spin-button,
     .desired-row input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; opacity: 1; cursor: pointer; background-color: #2a3a5e; background-repeat: no-repeat; background-position: center; border-left: 1px solid #3a4a6e; }
     .desired-row input[type="number"]::-webkit-outer-spin-button { display: none; }
