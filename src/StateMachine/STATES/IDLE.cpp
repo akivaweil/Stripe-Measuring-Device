@@ -39,10 +39,6 @@ void ResetTotal() {
   ResetBoardAdd();
 }
 
-float GetDistanceInches() {
-  return Measure::GetDistanceInches();
-}
-
 float GetBoardLengthInches() {
   return Measure::GetBoardLengthInches();
 }

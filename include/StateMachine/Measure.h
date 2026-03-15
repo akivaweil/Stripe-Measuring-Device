@@ -4,7 +4,6 @@
 namespace Measure {
 void Setup();
 void Run();
-float GetDistanceInches();
 float GetBoardLengthInches();
 bool HasValidSensorReading();
 }

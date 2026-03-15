@@ -1,6 +1,5 @@
 #include "StateMachine/Measure.h"
 #include "Config/Pin_Def.h"
-#include "Config/Config.h"
 #include <Bounce2.h>
 #include <Arduino.h>
 
@@ -12,9 +11,8 @@ static const float IR_SENSOR_LENGTHS_INCHES[] = {
   1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f
 };
 static const int IR_SENSOR_LENGTH_COUNT = sizeof(IR_SENSOR_LENGTHS_INCHES) / sizeof(IR_SENSOR_LENGTHS_INCHES[0]);
-static const unsigned long IR_SENSOR_DEBOUNCE_MS = 2;
+static const unsigned long IR_SENSOR_DEBOUNCE_MS = 5;
 
-static float s_distanceInches = 0.0f;
 static float s_boardLengthInches = 0.0f;
 static bool s_sensorValid = false;
 static Bounce s_irSensors[IR_SENSOR_LENGTH_COUNT];
@@ -45,14 +43,7 @@ void Measure::Run() {
     s_boardLengthInches = IR_SENSOR_LENGTHS_INCHES[highestTriggeredIndex];
   }
 
-  s_distanceInches = MAX_MEASUREMENT_LENGTH_INCHES - s_boardLengthInches;
-  if (s_distanceInches < 0.0f) s_distanceInches = 0.0f;
-
   s_sensorValid = (sensorCount > 0) && !invalidSensorStack;
-}
-
-float Measure::GetDistanceInches() {
-  return s_distanceInches;
 }
 
 float Measure::GetBoardLengthInches() {
@@ -69,7 +60,6 @@ void Measure::Setup() {
     s_irSensors[i].interval(IR_SENSOR_DEBOUNCE_MS);
   }
 
-  s_distanceInches = MAX_MEASUREMENT_LENGTH_INCHES;
   s_boardLengthInches = 0.0f;
   s_sensorValid = (IR_SENSOR_COUNT > 0);
 }
