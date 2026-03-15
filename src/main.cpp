@@ -56,9 +56,9 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     .desired-row label { font-size: 0.7rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.2em; }
     .desired-row input { width: 100%; box-sizing: border-box; padding: 0.4em 2.5em 0.4em 0.4em; font-size: 1rem; background: #16213e; border: 1px solid #2a3a5e; border-radius: 4px; color: #eee; }
     .desired-row input[type="number"]::-webkit-inner-spin-button,
-    .desired-row input[type="number"]::-webkit-outer-spin-button { height: 1.6em; width: 1.4em; opacity: 1; margin: 0; background: #2a3a5e; border-left: 1px solid #3a4a6e; border-radius: 0 4px 4px 0; cursor: pointer; }
+    .desired-row input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; height: 1.6em; width: 1.4em; margin: 0; opacity: 1; cursor: pointer; background: #2a3a5e url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 16\"><path fill=\"%23a0aec0\" d=\"M6 4l-4 5h8z\"/><path fill=\"%23a0aec0\" d=\"M6 12l-4-5h8z\"/></svg>') no-repeat center; background-size: 0.5em 0.65em; border-left: 1px solid #3a4a6e; border-radius: 0 4px 4px 0; }
     .desired-row input[type="number"]::-webkit-inner-spin-button:hover,
-    .desired-row input[type="number"]::-webkit-outer-spin-button:hover { background: #e94560; border-left-color: #e94560; }
+    .desired-row input[type="number"]::-webkit-outer-spin-button:hover { background-color: #3a4a6e; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 16\"><path fill=\"%23e94560\" d=\"M6 4l-4 5h8z\"/><path fill=\"%23e94560\" d=\"M6 12l-4-5h8z\"/></svg>'); background-size: 0.5em 0.65em; background-repeat: no-repeat; background-position: center; border-left-color: #e94560; }
     .desired-row input[type="number"]::-webkit-inner-spin-button { border-radius: 0 0 4px 0; margin-top: 1px; }
     .desired-row input[type="number"]::-webkit-outer-spin-button { border-radius: 0 4px 0 0; }
     .total-box.reached { border-color: #48bb78; background: rgba(72, 187, 120, 0.2); }
