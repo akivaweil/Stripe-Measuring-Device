@@ -61,7 +61,7 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     body.target-reached .latest-row-flash { animation: latestRowFlashSuccess 1.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
     .desired-row { margin-bottom: 0.5em; }
     .desired-row label { font-size: 0.7rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.2em; }
-    .desired-row input { width: 50%; box-sizing: border-box; padding: 0.4em 0.4em; font-size: 1rem; background: #16213e; border: 1px solid #2a3a5e; border-radius: 4px; color: #eee; }
+    .desired-row input { width: 25%; box-sizing: border-box; padding: 0.4em 0.4em; font-size: 1rem; background: #16213e; border: 1px solid #2a3a5e; border-radius: 4px; color: #eee; }
     .desired-row input[type="number"]::-webkit-inner-spin-button,
     .desired-row input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; display: none; }
     .desired-row input[type="number"] { -moz-appearance: textfield; }
