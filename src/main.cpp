@@ -54,7 +54,13 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
     .latest-row-flash { animation: latestRowFlash 1.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
     .desired-row { margin-bottom: 0.5em; }
     .desired-row label { font-size: 0.7rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.2em; }
-    .desired-row input { width: 100%; box-sizing: border-box; padding: 0.4em; font-size: 1rem; background: #16213e; border: 1px solid #2a3a5e; border-radius: 4px; color: #eee; }
+    .desired-row input { width: 100%; box-sizing: border-box; padding: 0.4em 2.5em 0.4em 0.4em; font-size: 1rem; background: #16213e; border: 1px solid #2a3a5e; border-radius: 4px; color: #eee; }
+    .desired-row input[type="number"]::-webkit-inner-spin-button,
+    .desired-row input[type="number"]::-webkit-outer-spin-button { height: 1.6em; width: 1.4em; opacity: 1; margin: 0; background: #2a3a5e; border-left: 1px solid #3a4a6e; border-radius: 0 4px 4px 0; cursor: pointer; }
+    .desired-row input[type="number"]::-webkit-inner-spin-button:hover,
+    .desired-row input[type="number"]::-webkit-outer-spin-button:hover { background: #e94560; border-left-color: #e94560; }
+    .desired-row input[type="number"]::-webkit-inner-spin-button { border-radius: 0 0 4px 0; margin-top: 1px; }
+    .desired-row input[type="number"]::-webkit-outer-spin-button { border-radius: 0 4px 0 0; }
     .total-box.reached { border-color: #48bb78; background: rgba(72, 187, 120, 0.2); }
     .total-box.reached .total-value { color: #48bb78; }
     body.target-reached .reset-btn { background: #48bb78; }
@@ -79,10 +85,6 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
   <div class="main-wrap">
   <div class="main-content">
   <div id="latestRow" class="latest-row"><span id="latestLabel">--</span></div>
-  <!-- distance and board length (restore to show again)
-  <div class="row"><span class="label">Distance (in):</span><span id="distance">--</span></div>
-  <div class="row"><span class="label">Board Length (in):</span><span id="boardLength">--</span></div>
-  -->
   <div class="boards-section">
     <div class="label">Boards measured</div>
     <div id="boardsList" class="boards-list"></div>
@@ -109,16 +111,8 @@ const char HTML_PAGE[] PROGMEM = R"rawliteral(
   </div>
   <script>
     var previousBoardCount = 0;
-    var DISTANCE_BLANK_CENTER = 12;
-    var DISTANCE_BLANK_TOLERANCE = 0.5;
     function fetchData() {
       fetch('/api/data').then(r => r.json()).then(d => {
-        var valid = d.sensorValid;
-        // distance/board length display (restore with rows above to show again)
-        // var dist = valid ? d.distance : null;
-        // var lo = DISTANCE_BLANK_CENTER - DISTANCE_BLANK_TOLERANCE, hi = DISTANCE_BLANK_CENTER + DISTANCE_BLANK_TOLERANCE;
-        // document.getElementById('distance').textContent = dist === null ? '--' : (dist >= lo && dist <= hi ? '---' : dist.toFixed(2));
-        // document.getElementById('boardLength').textContent = valid ? d.boardLength.toFixed(2) : '--';
         var list = document.getElementById('boardsList');
         var latestLabel = document.getElementById('latestLabel');
         var totalValue = document.getElementById('totalValue');
@@ -185,7 +179,6 @@ void handleRoot(AsyncWebServerRequest* request) {
 void handleApiData(AsyncWebServerRequest* request) {
   JsonDocument doc;
   doc["sensorValid"] = HasValidSensorReading();
-  doc["distance"] = GetDistanceInches();
   doc["boardLength"] = GetBoardLengthInches();
   doc["total"] = GetTotalInches();
   JsonArray arr = doc["boards"].to<JsonArray>();
