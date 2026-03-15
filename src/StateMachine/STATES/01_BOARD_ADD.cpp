@@ -8,11 +8,11 @@
 //╚═══╝ ════════════════════════════════════════════════════════════════ ╚═══╝
 
 // Config at top of state
-static const unsigned long STABLE_DURATION_MS = 100;
-static const float STABLE_TOLERANCE_INCHES = 0.25f;
+static const unsigned long STABLE_DURATION_MS = 200;
+static const float STABLE_TOLERANCE_INCHES = 0.99f;
 static const float MIN_BOARD_LENGTH_INCHES = 1.0f;
 static const float MAX_BOARD_LENGTH_INCHES = 11.0f;
-static const unsigned long MIN_TIME_BETWEEN_ADDS_MS = 300;
+static const unsigned long MIN_TIME_BETWEEN_ADDS_MS = 700;
 static const float CLEAR_BOARD_LENGTH_MAX_INCHES = 0.0f;
 static const unsigned long CLEAR_DURATION_MS = 200;
 
